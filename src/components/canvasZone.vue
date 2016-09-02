@@ -6,10 +6,12 @@
       <button @click="updateId(1000)">add</button>
     </div>
   </div>
+  <tool-zone></tool-zone>
 </div>
 </template>
 <script>
 import * as actions from '../vuex/actions'
+import toolZone from './toolZone.vue'
 
 export default {
   vuex: {
@@ -17,6 +19,9 @@ export default {
       id: state => state.id
     },
     actions: actions
+  },
+  components: {
+    toolZone
   }
 }
 </script>

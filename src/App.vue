@@ -20,6 +20,7 @@ import './assets/vendor/font-awesome/css/font-awesome.css'
 import layerZone from './components/layerZone'
 import editZone from './components/editZone'
 import canvasZone from './components/canvasZone'
+
 export default {
   vuex: {
   },
