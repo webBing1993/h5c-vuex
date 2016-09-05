@@ -15,21 +15,20 @@
 </template>
 <script>
 
+import * as actions from './vuex/actions'
 
-module.exports = {
+export default {
+  vuex: {
+    getters: {
+    },
+    actions: actions
+  },  
   attached: function(){
     $('.tool-zone').draggable({ handle: ".draggable" });
   },
   methods: {
     editPage: function(){
-      var _this = this;
-      _this.currentComp = {
-        type: 'hy-page'
-      } 
-      _this.currentPage.comps.map(function(item){
-        item.active = false;
-        return item;
-      }); 
+      this.updateActiveComp('page');
     },
     editMusic: function(){
       this.currentComp = {
@@ -40,40 +39,7 @@ module.exports = {
       this.$dispatch("showFormZone");
     },    
     addText: function(){
-      if(this.currentPage){
-        this.currentPage.comps.push({
-          type: 'hy-text',
-          text: '请输入文本',
-          active: false,
-          isShowView: true,
-          isShowEdit: true,
-          isShowAnimate: false,
-          animate:{
-            name: "none",
-            duration: 1,
-            delay: 0
-          },
-          position:{
-            left: 60,
-            top: 200,
-            width: 200,
-            height: 24,
-            transform: 0
-          },      
-          style:{
-            fontFamily: 'Microsoft Yahei',
-            fontSize: '16px',
-            color: '#000000',
-            fontWeight: 'normal',
-            fontStyle: 'normal',
-            textDecoration: 'normal',
-            textAlign: 'center',
-            lineHeight: 1.5
-          }
-        });
-        var len = this.currentPage.comps.length;
-        this.currentComp = this.currentPage.comps[len -1 ];        
-      }    
+      this.updateActiveComp('text');
     },
     addImage: function(){
       this.$dispatch("showPictureDialog", "addImageComp");

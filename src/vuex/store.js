@@ -23,14 +23,13 @@ const state = {
     music: {},
     pages: [defautPageSetting()]
   },
-  tpl: -1,
-  template: false,
-  release: -1,
-  // 当先激活 page  的 index 
   activePageIndex: 0,
   currentComp: {
     type: 'hy-page'
-  }
+  },
+  release: -1,
+  template: false,
+  tpl: -1
 }
 const mutations = {
   UPDATE_ID (state, id) {
@@ -52,9 +51,47 @@ const mutations = {
   COPY_SLIDE_PAGE (state, index) {
     let newPage = _.cloneDeep(state.slide.pages[index])
     state.slide.pages.splice(index + 1, 0, newPage)
+  },
+  // 更新激活 page 的 title 
+  UPDATE_ACTIVE_PAGE_TILTE (state, mutation) {
+    let index = state.activePageIndex
+    state.slide.pages[index].title =  mutation.payload.value;
+  },
+  // 更新激活 page 的 color 
+  UPDATE_ACTIVE_PAGE_BACKGROUND_COLOR (state, mutation){
+    let index = state.activePageIndex
+    state.slide.pages[index].style.backgroundColor = mutation.payload.value;
+  },
+  // 更新激活 page 的 color 
+  UPDATE_ACTIVE_PAGE_IMAGE (state, mutation){
+    let index = state.activePageIndex
+    state.slide.pages[index].style.image = mutation.payload.value;
+  }, 
+  // 更新激活组件
+  UPDATE_ACTIVE_COMP (state, mutation) {
+    let type = mutation.payload.type
+    let config = mutation.payload.config
+    let index = state.activePageIndex
+
+    if ( ['page', 'music'].indexOf(type) >= 0 ) {
+      state.currentComp = config
+    }
+    else {
+      state.slide.pages[index].comps.push(config)
+      let len = state.slide.pages[index].comps.length;
+      state.currentComp = state.slide.pages[index].comps[len - 1]
+    }
+  },
+  // 修改激活组件
+  CHANGE_ACTIVE_COMP (state, mutation) {
+    state.currentComp = mutation.payload.config
   }  
 }
-const plugins = []
+const plugins = [function(store) {
+  store.subscribe((mutation, state) => {
+    H.hook.$emit('vuex:mutation', state)
+  })
+}]
 
 export default new Vuex.Store({
   state,

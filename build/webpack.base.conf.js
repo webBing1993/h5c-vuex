@@ -7,7 +7,7 @@ var projectRoot = path.resolve(__dirname, '../')
 module.exports = {
   entry: {
     app: './src/main.js',
-    vendor: ['jquery','lodash','./vendor/jquery-ui/jquery-ui.js']
+    vendor: ['lodash']
   },
   output: {
     path: config.build.assetsRoot,
@@ -80,10 +80,7 @@ module.exports = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      _: "lodash",
-      $: "jquery",
-      jQuery: "jquery",
-      "window.jQuery": "jquery"
+      _: "lodash"
     })
   ],
   eslint: {

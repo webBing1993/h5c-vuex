@@ -1,10 +1,64 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>h5c-vuex</title>
-  </head>
-  <body>
-    <app></app>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/static/vendors/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/vendors/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="/static/vendors/animate/animate.css">  
+  <title>h5c-vuex</title>
+</head>
+<body>
+<script>
+window.Global = {
+  api: {
+    // 图片相关接口
+    basePicture: "/wechat/file/download?id=",
+    uploadPicture: '/wechat/file/upload?type=0&remark=h5',
+    deletePicture: '/wechat/file/delete',
+    // 图片库图片
+    pictureTag : "/pictureLibrary/getTagList",
+    pictureLibrary: '/base/query/common/query?queryName=system_allImgResourceTags&sourceType=0&remark=system',
+
+    // 我的图片
+    getPicture: '/base/query/common/query?queryName=system_allImgResource&sourceType=0&remark=h5',
+
+    // 最热图片
+    triggerHotPicture: "/base/query/common/update?queryName=system_updateSourceHot",
+    getHotPicture:"/base/query/common/query?queryName=system_allImgResourceHot&sourceType=0&remark=system",
+
+
+    // 音乐相关接口
+    musicTag: "/music/tag",
+    uploadMusic: "/wechat/file/upload?type=3&remark=h5",
+    getMusic: '/base/query/common/query?queryName=system_allImgResourceTags&sourceType=3&remark=h5',
+    deleteMusic: '/wechat/file/delete',
+
+    // h5标签tag
+    getTag: "/bisTem/getTagList",
+
+    // h5 幻灯片接口
+    saveH5: "slide/h5/save",
+    getH5: "/base/query/common/query?queryName=system_getOneH5",
+    getH5List: "/base/query/common/query?queryName=system_getAllH5",
+    
+    // h5 页面模版接口 
+    saveH5Page: "slide/h5/page/save",
+    delH5Page: "slide/h5/page/delete",
+    saveH5PageList:"/base/query/common/query?queryName=system_getAllH5Page&rows=10&page=1&template=1",
+    
+    // h5生成页面接口
+    h5pc: "http://192.168.81.25/hysmswechatfront/slide/slider/pc.jsp#",
+    h5wap: "http://bis.hylink.com/h5/wap/"
+  },
+  basePath: "http://192.168.81.25/hysmswechatfront/slide/editor/",
+  isAdmin: false
+}
+</script>
+  <app></app>
+  <script src="/static/vendors/jquery/jquery-1.11.2.js"></script>
+  <script src="/static/vendors/jquery-ui/jquery-ui.js"></script>
+  <script src="/static/vendors/plupload/plupload.full.min.js"></script>
+  <script src="/static/vendors/iscroll/iscroll.js"></script>
+  <script src="/static/vendors/layer/layer.js"></script>    
+</body>
 </html>

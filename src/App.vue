@@ -16,10 +16,10 @@
 
 <script>
 import './assets/css/base.css'
-import './assets/vendor/font-awesome/css/font-awesome.css'
-import layerZone from './components/layerZone'
-import editZone from './components/editZone'
-import canvasZone from './components/canvasZone'
+
+import layerZone from './layerZone.vue'
+import editZone from './editZone.vue'
+import canvasZone from './canvasZone.vue'
 
 export default {
   vuex: {
