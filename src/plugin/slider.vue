@@ -59,6 +59,14 @@ module.exports = {
           this.pwidth = $(this).parent().width();
           var ratio = ui.position.left / this.pwidth;
           _this.value = parseFloat(((_this.max - _this.min) * ratio).toFixed(_this.step));
+          _this.$dispatch('value-change', _this.value, false);
+        },
+        stop: function(evt, ui){
+          this.$track.css('width', ui.position.left + 'px');
+          this.pwidth = $(this).parent().width();
+          var ratio = ui.position.left / this.pwidth;
+          _this.value = parseFloat(((_this.max - _this.min) * ratio).toFixed(_this.step));
+          _this.$dispatch('value-change', _this.value, true);
         }
       });
     }, 0);

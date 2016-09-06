@@ -15,7 +15,7 @@
               <input type="text" 
                 :value="currentPage.title" 
                 @input="updateActivePageTitle" 
-                @blur="updateActivePageTitle($event, true)" 
+                @blur="updateActivePageTitle($event, true)"
                 placeholder="请输入页面标题">
             </div>
           </div>

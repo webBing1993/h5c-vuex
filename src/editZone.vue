@@ -8,8 +8,12 @@
 </template>
 <script>
 import * as actions from './vuex/actions'
+
 import hyPageEdit from './component/hyPageEdit.vue'
 import hyTextEdit from './component/hyTextEdit.vue'
+import hyImageEdit from './component/hyImageEdit.vue'
+import hyMusicEdit from './component/hyMusicEdit.vue'
+import hyFormEdit from './component/hyFormEdit.vue'
 
 export default {
   vuex: {
@@ -28,7 +32,7 @@ export default {
   methods: {
   },
   components: {
-    hyPageEdit, hyTextEdit
+    hyPageEdit, hyTextEdit, hyImageEdit, hyMusicEdit, hyFormEdit
   }
 }
 </script>

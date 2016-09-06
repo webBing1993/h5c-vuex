@@ -3,12 +3,13 @@
   <drag 
     :active="comp.active"
     :enable="dragEnable"
-    :top.sync="comp.position.top"
-    :left.sync="comp.position.left"
-    :height.sync="comp.position.height"    
-    :width.sync="comp.position.width"
-    :transform.sync="comp.position.transform"
-    :handles="'nw, ne, sw, se'"> 
+    :top="comp.position.top"
+    :left="comp.position.left"
+    :height="comp.position.height"    
+    :width="comp.position.width"
+    :transform="comp.position.transform"
+    :handles="'nw, ne, sw, se'"
+    @postion-change="changeActiveCompPostion"> 
     <div class="inner" 
       :class="{'animated': isAnimated}" 
       :style="[fixStyle, animateStyle]">
@@ -24,6 +25,81 @@
   </drag>
 </div>
 </template>
+<script>
+
+import * as actions from '../vuex/actions'
+
+module.exports = {
+  vuex: {
+    getters: {
+    },
+    actions: actions
+  },    
+  props: {
+    comp: {
+      type: Object,
+      required: true
+    },
+    dragEnable:{
+      type: Boolean,
+      default: true
+    },
+    animatable:{
+      type: Boolean,
+      default: true
+    }    
+  },
+  computed: {
+    isAnimated: function(){
+      return ! (this.comp.animate.name === 'none') && this.animatable;
+    },    
+    fixStyle: function() {
+      var tmp = {};
+      for (var prop in this.comp.style) {
+        if (['left', 'top', 'width', 'height'].indexOf(prop) > -1) {
+          tmp[prop] = this.comp.style[prop] + 'px';
+        } else if (['transform'].indexOf(prop) > -1) {
+          tmp[prop] = 'rotate(' + this.comp.style[prop] + 'deg)';
+        } else if (['boxShadow'].indexOf(prop) > -1) {
+          tmp[prop] = 'rgba(0,0,0, .5) 0px 0px ' + this.comp.style[prop] + 'px';
+        } else if (['borderWidth'].indexOf(prop) > -1) {
+          tmp[prop] = this.comp.style[prop] + 'px';      
+        } else if (['borderRadius'].indexOf(prop) > -1) {
+          tmp[prop] = this.comp.style[prop] + '%';
+        } else {
+          tmp[prop] = this.comp.style[prop]
+        }
+      }
+      return tmp;
+    },
+    animateStyle: function(){
+      return {
+        animationName: this.comp.animate.name, 
+        animationDuration: this.comp.animate.duration + 's',
+        animationDelay: this.comp.animate.delay + 's'
+      };
+    }    
+  },
+  ready: function() {
+    this.$dispatch('compReady');
+  },
+  methods: {
+    changeActiveCompPostion: function(position, flag){
+      var config = {
+        position: position
+      };
+      this.changeActiveComp(config, flag);
+    }
+  },  
+  components: {
+    drag: require('../plugin/drag.vue'),
+    xText: require('../form/xText.vue'),
+    xStar: require('../form/xStar.vue'),
+    xRadio: require('../form/xRadio.vue'),
+    xCheckbox: require('../form/xCheckbox.vue')    
+  }
+}
+</script>
 <style>
   .hy-comp-form .inner {
     padding-top: 10px;
@@ -120,66 +196,3 @@
     overflow: hidden;    
   }
 </style>
-<script>
-module.exports = {
-  data: function(){
-    return {
-    }
-  },
-  props: {
-    comp: {
-      type: Object,
-      required: true
-    },
-    dragEnable:{
-      type: Boolean,
-      default: true
-    },
-    animatable:{
-      type: Boolean,
-      default: true
-    }    
-  },
-  computed: {
-    isAnimated: function(){
-      return ! (this.comp.animate.name === 'none') && this.animatable;
-    },    
-    fixStyle: function() {
-      var tmp = {};
-      for (var prop in this.comp.style) {
-        if (['left', 'top', 'width', 'height'].indexOf(prop) > -1) {
-          tmp[prop] = this.comp.style[prop] + 'px';
-        } else if (['transform'].indexOf(prop) > -1) {
-          tmp[prop] = 'rotate(' + this.comp.style[prop] + 'deg)';
-        } else if (['boxShadow'].indexOf(prop) > -1) {
-          tmp[prop] = 'rgba(0,0,0, .5) 0px 0px ' + this.comp.style[prop] + 'px';
-        } else if (['borderWidth'].indexOf(prop) > -1) {
-          tmp[prop] = this.comp.style[prop] + 'px';      
-        } else if (['borderRadius'].indexOf(prop) > -1) {
-          tmp[prop] = this.comp.style[prop] + '%';
-        } else {
-          tmp[prop] = this.comp.style[prop]
-        }
-      }
-      return tmp;
-    },
-    animateStyle: function(){
-      return {
-        animationName: this.comp.animate.name, 
-        animationDuration: this.comp.animate.duration + 's',
-        animationDelay: this.comp.animate.delay + 's'
-      };
-    }    
-  },
-  ready: function() {
-    this.$dispatch('compReady');
-  },
-  components: {
-    drag: require('../plugin/drag.vue'),
-    xText: require('../form/xText.vue'),
-    xStar: require('../form/xStar.vue'),
-    xRadio: require('../form/xRadio.vue'),
-    xCheckbox: require('../form/xCheckbox.vue')    
-  }
-}
-</script>

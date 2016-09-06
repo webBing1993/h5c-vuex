@@ -3,7 +3,7 @@
     <div class="panel-body">
       <ul class="nav nav-tabs">
         <li @click="switchPanel(0)" class="active"><a href="javascript:;">属性</a></li>
-        <li @click="switchPanel(1)"><a href="javascript:;">样式</a></li>
+        <li @click="switchPanel(1)" ><a href="javascript:;">样式</a></li>
         <li @click="switchPanel(2)"><a href="javascript:;">动画</a></li>
       </ul>
       <div class="tab-content">
@@ -12,7 +12,12 @@
             <div class="sortable">
               <template v-for="(index, item) in comp.list" track-by="$index">
                 <div class="form-ele-wrap" :index="index">
-                  <component :is="item.type + 'Edit'" :item.sync="item" :comp.sync="comp">
+                  <component 
+                    :is="item.type + 'Edit'"
+                    :item="item" 
+                    :index="index"
+                    @value-change="valueChange"
+                    >
                   </component>
                   <a @click="delItem(item)" class="btn-del-item" href="javascript:;">
                     <span class="icon-remove"></span>
@@ -52,51 +57,89 @@
         <div class="tab-pane">
           <div class="form-group-item">
             <span class="title">填充色:</span>
-            <div class="flex-col-6">
-              <color-pick class="flex-col-7 color-picker" :color.sync="comp.style.backgroundColor"></color-pick>
+            <div class="flex-col-5">
+              <color-pick class="flex-col-7 color-picker" 
+                :color="comp.style.backgroundColor"
+                @color-change="changeActiveCompBackgroundColor">
+              </color-pick>
             </div>
           </div>
           <div class="form-group-item">
             <span class="title">边框色:</span>
-            <div class="flex-col-6">
-              <color-pick class="flex-col-7 color-picker" :color.sync="comp.style.borderColor"></color-pick>
+            <div class="flex-col-5">
+              <color-pick class="flex-col-7 color-picker" 
+                :color="comp.style.borderColor"
+                @color-change="changeActiveCompBorderColor">
+              </color-pick>
             </div>
           </div>
           <div class="form-group-item">
             <span class="title">边框:</span>
-            <slider class="flex-col-5" :min="0" :max="10" :step="1" :value.sync="comp.style.borderWidth">
+            <slider class="flex-col-5" 
+              :min="0" :max="10" :step="1" 
+              :value="comp.style.borderWidth"
+              @value-change="changeActiveCompBorderWidth">
             </slider>
-            <!-- <input type="text" v-model="comp.style.lineHeight" number debounce="50"> -->
             <div class="flex-col-1">
-              <input type="text" v-validate="comp.style.lineHeight" :min="0" :max="10" :value="comp.style.borderWidth" />
+              <ui-text 
+              :value="comp.style.borderWidth"
+              :min="0" :max="10" type="float"
+              @value-change="changeActiveCompBorderWidth"
+              >
+              </ui-text>
             </div>
             <div class="suffix">px</div>
           </div>
           <div class="form-group-item">
-            <div class="title">圆角</div>
-            <slider class="flex-col-5" :min="0" :max="50" :step="0" :value.sync="comp.style.borderRadius"></slider>
-            <!-- <input type="text" v-model="comp.style.borderRadius" number> -->
+            <div class="title">圆角:</div>
+            <slider class="flex-col-5" 
+              :min="0" :max="50" :step="0" 
+              :value="comp.style.borderRadius"
+              @value-change="changeActiveCompBorderRadius"
+              >
+            </slider>
             <div class="flex-col-1">
-              <input type="text" v-validate="comp.style.borderRadius" :min="0" :max="50" :value="comp.style.borderRadius">
+              <ui-text 
+              :value="comp.style.borderRadius"
+              :min="0" :max="50" type="float"
+              @value-change="changeActiveCompBorderRadius"
+              >
+              </ui-text>
             </div>
             <label class="suffix">%</label>
           </div>
           <div class="form-group-item">
-            <div class="title">透明</div>
-            <slider class="flex-col-5" :min="0" :max="100" :step="0" :value.sync="opacity"></slider>
-            <!-- <input type="text" v-model="opacity" number> -->
+            <div class="title">透明:</div>
+            <slider class="flex-col-5" 
+              :min="0" :max="100" :step="0" 
+              :value="opacity"
+              @value-change="changeActiveCompOpacity">
+            </slider>
             <div class="flex-col-1">
-              <input type="text" v-validate="opacity" :min="0" :max="100" :value="opacity">
+              <ui-text 
+                :value="comp.style.opacity"
+                :min="0" :max="100" type="float"
+                @value-change="changeActiveCompOpacity"
+                >
+              </ui-text>
             </div>
             <div class="suffix">%</div>
           </div>          
           <div class="form-group-item">
             <span class="title">旋转:</span>
-            <slider class="flex-col-5" :min="0" :max="360" :step="0" :value.sync="comp.position.transform">
-            </slider>
-            <!-- <input type="text" v-model="comp.position.transform" number debounce="50"> -->
+            <slider class="flex-col-5" 
+              :min="0" :max="360" :step="0" 
+              :value="comp.position.transform"
+              @value-change="changeActiveCompTransform"
+              >
+            </slider>            
             <div class="flex-col-1">
-              <input style="width:100%" type="text" v-validate="comp.position.transform" :min="0" :max="360" :value="comp.position.transform" />
+              <ui-text 
+                :value="comp.position.transform"
+                :min="0" :max="360" type="int"
+                @value-change="changeActiveCompTransform"
+                >
+              </ui-text>
             </div>
             <div class="suffix">度</div>
           </div>    
@@ -143,12 +186,20 @@
   </div>
 </template>
 <script>
+import * as actions from '../vuex/actions'
+
+import slider from'../plugin/slider.vue'
+import uiText from '../plugin/uiText.vue'
+import animate from'../plugin/animate.vue'
+
 module.exports = {
-  props: {
-    comp: {
-      type: Object,
-      required: true
-    }
+  vuex: {
+    getters: {
+      slide: state => state.slide,
+      activePageIndex: state => state.activePageIndex,
+      comp: state => state.currentComp
+    },
+    actions: actions
   },
   computed: {
     opacity: {
@@ -242,10 +293,71 @@ module.exports = {
     },
     toggleActive: function(event){
       $(event.currentTarget).toggleClass('active');
-    }    
+    },
+    changeActiveCompBackgroundColor: function(color){
+      var value = color.hex;
+      var config = {
+        style: {
+          backgroundColor: value
+        }
+      };
+      this.changeActiveComp(config, true);  
+    },
+    changeActiveCompBorderColor: function(color){
+      var value = color.hex;
+      var config = {
+        style: {
+          borderColor: value
+        }
+      };
+      this.changeActiveComp(config, true); 
+    },
+    changeActiveCompBorderWidth: function(value, flag){
+      var config = {
+        style: {
+          borderWidth: value
+        }
+      };
+      this.changeActiveComp(config, flag); 
+    },
+    changeActiveCompBorderRadius: function(value, flag){
+      var config = {
+        style: {
+          borderRadius: value
+        }
+      };
+      this.changeActiveComp(config, flag); 
+    },
+    changeActiveCompOpacity: function(value, flag){
+      var config = {
+        style: {
+          opacity: value
+        }
+      };
+      this.changeActiveComp(config, flag); 
+    },
+    changeActiveCompTransform: function(value, flag){
+      var config = {
+        position: {
+          transform: value
+        }
+      };
+      this.changeActiveComp(config, flag);       
+    },        
+    valueChange: function( index, value, flag ){
+      console.log(index, value, flag);
+      var list = _.cloneDeep(this.comp.list);
+      list[index] = value;
+      var config = {
+        list: list
+      };
+      console.log('changeActiveComp', config);
+      this.changeActiveComp(config, flag); 
+    } 
   },
   components: {
     animate: require('../plugin/animate.vue'),
+    uiText: require('../plugin/uiText.vue'),
     xTextEdit: require('../form/xTextEdit.vue'),
     xStarEdit: require('../form/xStarEdit.vue'),
     xRadioEdit: require('../form/xRadioEdit.vue'),

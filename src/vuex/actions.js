@@ -52,12 +52,27 @@ export const updateActivePageImage = ({ dispatch }, img) => {
   })
 }
 
-export const updateActiveComp = ({ dispatch }, type) => {
+export const updateSideMusic = ({ dispatch }, music) => {
+  dispatch({
+    type: 'UPDATE_SLIDE_MUSIC',
+    silent: false,
+    payload: {
+      music: music
+    }
+  })
+}
+
+export const updateActiveComp = ({ dispatch }, type, data) => {
   let config = {};
   switch (type) {
     case 'page':
       config = {
         type: 'hy-page'
+      }
+      break;
+    case 'music':
+      config = {
+        type: 'hy-music'
       }
       break;
     case 'text':
@@ -82,13 +97,81 @@ export const updateActiveComp = ({ dispatch }, type) => {
         },
         style: {
           fontFamily: 'Microsoft Yahei',
-          fontSize: '16px',
+          fontSize: 16,
           color: '#000000',
           fontWeight: 'normal',
           fontStyle: 'normal',
           textDecoration: 'normal',
           textAlign: 'center',
           lineHeight: 1.5
+        }
+      }
+      break;
+    case 'image':
+      config = {
+        type: 'hy-image',
+        active: true,
+        isShowView: true,
+        isShowEdit: true,
+        imgSrc: data,
+        isShowAnimate: false,
+        animate: {
+          name: "none",
+          duration: 1,
+          delay: 0
+        },
+        zIndex: 0,
+        position: {
+          left: 60,
+          top: 100,
+          width: 200,
+          height: 'auto',
+          transform: 0
+        },
+        style: {
+          opacity: 1,
+          borderRadius: 0,
+          boxShadow: 0,
+        }
+      }
+      break;
+    case 'form':
+      config = {
+        type: 'hy-form',
+        active: false,
+        isShowView: true,
+        isShowEdit: true,
+        isShowAnimate: false,
+        btn: {
+          text: '提交',
+        },
+        feedback: {
+          text: '提交成功！感谢你的参与'
+        },
+        list: data,
+        animate: {
+          name: "none",
+          duration: 1,
+          delay: 0
+        },
+        position: {
+          left: 0,
+          top: 0,
+          width: 280,
+          height: 340,
+          transform: 0
+        },
+        style: {
+          backgroundColor: '#ffffff',
+          borderWidth: 0,
+          borderColor: '#cccccc',
+          borderStyle: 'solid',
+          borderRadius: 0,
+          opacity: 1,
+          fontWeight: 'normal',
+          fontStyle: 'normal',
+          textDecoration: 'normal',
+          textAlign: 'center'
         }
       }
       break;
@@ -103,12 +186,23 @@ export const updateActiveComp = ({ dispatch }, type) => {
   })
 }
 
-export const changeActiveComp = ({ dispatch }, config) => {
+export const changeActiveComp = ({ dispatch }, config, flag) => {
   dispatch({
     type: 'CHANGE_ACTIVE_COMP',
-    silent: false,
+    silent: !flag,
     payload: {
       config: config
+    }
+  })
+}
+
+export const activeComp = ({ dispatch }, comp, index, flag) => {
+  dispatch({
+    type: 'ACTIVE_COMP',
+    silent: !flag,
+    payload: {
+      comp: comp,
+      index: index
     }
   })
 }

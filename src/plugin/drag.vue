@@ -23,24 +23,19 @@ module.exports = {
       default: "n, e, s, w, ne, se, sw, nw"
     },
     top: {
-      type: Number,
-      twoway: true
+      type: Number
     },
     left: {
-      type: Number,
-      twoway: true
+      type: Number
     },
     width: {
-      type: [String, Number],
-      twoway: true
+      type: [String, Number]
     },
     height: {
-      type: [String, Number],
-      twoway: true
+      type: [String, Number]
     },
     transform: {
-      type: Number,
-      twoway: true
+      type: Number
     }       
   },
   computed: {
@@ -59,14 +54,50 @@ module.exports = {
     if( this.enable ){
       $( this.$el ).resizable({
         handles: _this.handles,
+        stop: function(evt, ui){
+          _this.width = ui.size.width;
+          _this.height = ui.size.height;
+          _this.$dispatch('postion-change', {
+            width: _this.width,
+            height: _this.height,
+            top: _this.top,
+            left: _this.left,
+            transform: _this.transform
+          }, true);        
+        },        
         resize: function(evt, ui){
           _this.width = ui.size.width;
-          _this.height = ui.size.height;          
+          _this.height = ui.size.height;
+          _this.$dispatch('postion-change', {
+            width: _this.width,
+            height: _this.height,
+            top: _this.top,
+            left: _this.left,
+            transform: _this.transform
+          });        
         }
       }).draggable({
+        stop: function(evt, ui){
+          _this.top = Number(ui.position.top.toFixed(2));
+          _this.left = Number(ui.position.left.toFixed(2));
+          _this.$dispatch('postion-change', {
+            width: _this.width,
+            height: _this.height,
+            top: _this.top,
+            left: _this.left,
+            transform: _this.transform
+          }, true);          
+        },        
         drag: function(evt, ui){
           _this.top = Number(ui.position.top.toFixed(2));
           _this.left = Number(ui.position.left.toFixed(2));
+          _this.$dispatch('postion-change', {
+            width: _this.width,
+            height: _this.height,
+            top: _this.top,
+            left: _this.left,
+            transform: _this.transform
+          });          
         }
       });
     }

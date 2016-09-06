@@ -10,14 +10,35 @@
       <li><button class="btn btn-default btn-sm" @click="editMusic">音乐</button></li>
       <li><button class="btn btn-default btn-sm" @click="addForm">表单</button></li>    
       <li><button class="btn btn-default btn-sm" @click="addButton">按钮</button></li>
-    </ul> 
+    </ul>
+  <!-- 图片选择弹窗  -->
+  <picture-dialog 
+    :show.sync="showPictureDialog"
+    type="changePictrue"
+    >
+  </picture-dialog>
+  <!-- 表单选择弹窗 -->
+  <form-dialog 
+    :show.sync="showFormDialog"
+    >
+  </form-dialog>
+
   </div>  
 </template>
 <script>
 
 import * as actions from './vuex/actions'
 
+import pictureDialog from './plugin/pictureDialog.vue'
+import formDialog from './plugin/formDialog.vue'
+
 export default {
+  data: function(){
+    return {
+      showPictureDialog: false,
+      showFormDialog: false
+    }
+  },  
   vuex: {
     getters: {
     },
@@ -31,18 +52,17 @@ export default {
       this.updateActiveComp('page');
     },
     editMusic: function(){
-      this.currentComp = {
-        type: 'hy-music'
-      }
+      this.updateActiveComp('music');
     },
     addForm: function(){
-      this.$dispatch("showFormZone");
+      // this.$dispatch("showFormZone");
+      this.showFormDialog = true;
     },    
     addText: function(){
       this.updateActiveComp('text');
     },
     addImage: function(){
-      this.$dispatch("showPictureDialog", "addImageComp");
+      this.showPictureDialog = true;
     },
     addButton: function(){
       if( this.currentPage ) {
@@ -85,14 +105,66 @@ export default {
         var len = this.currentPage.comps.length;
         this.currentComp = this.currentPage.comps[len -1 ];        
       }     
-    }  
+    }
+  },
+  events: {
+    changePictrue: function (imgSrc) {
+      this.updateActiveComp('image', imgSrc);
+    },
+    addformComp: function(type){
+      var list = null;
+      switch(type){
+        case 0:
+          list = [{
+            type:'xText',
+            name:'姓名',
+            required: true
+          },{
+            type:'xText',
+            name:'手机',
+            required: true
+          },{
+            type:'xText',
+            name:'邮箱',
+            required: false
+          }];        
+        break;        
+        case 1:
+          list = [{
+            type:'xStar',
+            name:'五星评价',
+            defualt: 0
+          }];         
+        break;
+        case 2:
+          list = [{
+            type:'xRadio',
+            name:'请输入问题',
+            items: ["选项一", "选项二","选项三"]
+          }];         
+        break;
+        case 3:
+          list = [{
+            type:'xCheckbox',
+            name:'请输入问题',
+            items: ["选项一", "选项二","选项三"]
+          }];         
+        break;
+        default:
+          throw new Errow('错误, 未知表单模版类型');
+      }
+      this.updateActiveComp('form', list);
+    }     
+  },    
+  components: {
+    pictureDialog, formDialog
   }
 }
 </script>
 <style>
   .tool-zone{
     position: absolute;
-    left: 26px;
+    left: 770px;
     top: 115px;
     z-index: 90;
   }

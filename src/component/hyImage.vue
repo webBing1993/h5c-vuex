@@ -4,11 +4,12 @@
     v-el:drag
     :active="comp.active"
     :enable="dragEnable"
-    :top.sync="comp.position.top"
-    :left.sync="comp.position.left"
-    :width.sync="comp.position.width"
-    :height.sync="comp.position.height"
-    :transform.sync="comp.position.transform">
+    :top="comp.position.top"
+    :left="comp.position.left"
+    :width="comp.position.width"
+    :height="comp.position.height"
+    :transform="comp.position.transform"
+    @postion-change="changeActiveCompPostion">
       <div class="img-wrap" 
         :class="{'animated': isAnimated}" 
         :style="[fixStyle, animateStyle]">
@@ -34,7 +35,14 @@
   }
 </style>
 <script>
+import * as actions from '../vuex/actions'
+
 module.exports = {
+  vuex: {
+    getters: {
+    },
+    actions: actions
+  },  
   data: function(){
     return {
       showContextMenu: false,
@@ -44,8 +52,7 @@ module.exports = {
   },
   props: {
     comp: {
-      type: Object,
-      required: true
+      type: Object
     },
     dragEnable:{
       type: Boolean,
@@ -89,10 +96,18 @@ module.exports = {
     var _this = this;
       // console.log($(_this.$els.drag).outerWidth());
       // console.log($(_this.$els.drag).outerHeight()); 
-    this.comp.position.height = $(_this.$els.drag).outerHeight(); 
+    // this.comp.position.height = $(_this.$els.drag).outerHeight(); 
   },  
   ready: function() {
     this.$dispatch('compReady');
+  },
+  methods: {
+    changeActiveCompPostion: function(position, flag){
+      var config = {
+        position: position
+      };
+      this.changeActiveComp(config, flag);
+    }
   },
   components: {
     drag: require('../plugin/drag.vue')

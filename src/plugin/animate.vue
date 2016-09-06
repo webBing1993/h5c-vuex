@@ -3,7 +3,10 @@
     <div class="form-group-item">
       <span class="title">类型:</span>
       <div class="flex-row flex-col-7">
-        <select class="flex-col-6" v-model="animate.name">
+        <select class="flex-col-6" 
+          :value="comp.animate.name"
+          @change="changeActiveCompAnimateName"
+          >
             <option value="none">请选择</option>
             <optgroup label="强调">
                <option value="bounce">弹跳</option>
@@ -126,19 +129,37 @@
     </div>
     <div class="form-group-item">
       <span class="title">速度:</span>
-      <slider class="flex-col-5" :min="0" :max="10" :step="0.1" :value.sync="animate.duration"></slider>      
-      <!-- <input type="text" v-model="animate.duration" number> -->
+      <slider class="flex-col-5" 
+        :min="0" :max="10" :step="0.1" 
+        :value="comp.animate.duration"
+        @value-change="changeActiveCompAnimateDuration"
+        >
+      </slider>
       <div class="flex-col-1">
-        <input type="text" v-validate="animate.duration" :min="0" :max="10" :value="animate.duration">        
+        <ui-text 
+          :value="comp.animate.duration"
+          :min="0" :max="10" type="float"
+          @value-change="changeActiveCompAnimateDuration"
+          >
+        </ui-text>
       </div>
       <span class="suffix">s</span>
     </div>    
     <div class="form-group-item">
       <span class="title">延迟:</span>
-      <slider class="flex-col-5" :min="0" :max="10" :step="0.1" :value.sync="animate.delay"></slider>      
-      <!-- <input type="text" v-model="animate.delay" number> -->
+      <slider class="flex-col-5" 
+        :min="0" :max="10" :step="0.1" 
+        :value="comp.animate.delay"
+        @value-change="changeActiveCompAnimateDelay"
+        >
+      </slider>      
       <div class="flex-col-1">
-            <input type="text" v-validate="animate.delay" :min="0" :max="10" :value="animate.delay">
+        <ui-text 
+          :value="comp.animate.delay"
+          :min="0" :max="10" type="float"
+          @value-change="changeActiveCompAnimateDelay"
+          >
+        </ui-text>
       </div>
       <span class="suffix">s</span>
     </div>
@@ -153,18 +174,47 @@
 <style scoped>
 </style>
 <script>
+
+  import * as actions from '../vuex/actions'
+  
+  import slider from'../plugin/slider.vue'
+  import uiText from '../plugin/uiText.vue'
+
   module.exports = {
-    props: {
-      animate: {
-        type: Object,
-        required: true
+    vuex: {
+      getters: {
+        slide: state => state.slide,
+        activePageIndex: state => state.activePageIndex,
+        comp: state => state.currentComp
       },
-      animateShow: {
-        type: Boolean,
-        required: true
-      }      
-    },
+      actions: actions
+    },      
     methods: {
+      changeActiveCompAnimateName: function(value, flag){
+        var value = event.target.value;
+        var config = {
+          animate: {
+            name: value
+          }
+        };
+        this.changeActiveComp(config, flag);
+      },      
+      changeActiveCompAnimateDelay: function(value, flag){
+        var config = {
+          animate: {
+            delay: value
+          }
+        };
+        this.changeActiveComp(config, flag);
+      },
+      changeActiveCompAnimateDuration: function(value, flag){
+        var config = {
+          animate: {
+            duration: value
+          }
+        };
+        this.changeActiveComp(config, flag);
+      },      
       showAnimate: function(){
         var _this = this;
         this.animateShow = true;
@@ -174,7 +224,7 @@
       }
     },
     components: {
-      slider: require('./slider.vue')
+      slider, uiText
     }
   }
 </script>

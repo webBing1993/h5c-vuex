@@ -1,19 +1,20 @@
 <template>
 <div class="hy-comp-button">
- <!-- <pre>{{currentComp | json}}</pre>  -->
+ <!-- <pre>{{comp | json}}</pre>  -->
   <drag 
-    :active="currentComp.active"
+    :active="comp.active"
     :enable="dragEnable"
-    :top.sync="currentComp.position.top"
-    :left.sync="currentComp.position.left"
-    :width.sync="currentComp.position.width"
-    :height.sync="currentComp.position.height"
-    :transform.sync="currentComp.position.transform"
+    :top="comp.position.top"
+    :left="comp.position.left"
+    :width="comp.position.width"
+    :height="comp.position.height"
+    :transform="comp.position.transform"
+    @postion-change="changeActiveCompPostion"
     :handles="'ne, se, sw, nw'">
     <div class="inner" 
       :class="{'animated': isAnimated}"
-      :style="[currentComp.style, animateStyle]">     
-      {{currentComp.text}} 
+      :style="[fixStyle, animateStyle]">     
+      {{comp.text}} 
     </div>
   </drag>
 </div>
@@ -32,36 +33,28 @@
   }
 </style>
 <script>
+
 import * as actions from '../vuex/actions'
 
-var findInArray =  function (array, callback) {
-  for (let i = 0, length = array.length; i < length; i++) {
-    if (callback.apply(callback, [array[i], i, array])) return array[i];
-  }
-}
 export default {
   vuex: {
     getters: {
-      slide: state => state.slide,
-      activePageIndex: state => state.activePageIndex,
-      currentComp: state => state.currentComp
     },
     actions: actions
+  }, 
+  props: {
+    comp: {
+      type: Object
+    },
+    dragEnable:{
+      type: Boolean,
+      default: true
+    },
+    animatable:{
+      type: Boolean,
+      default: true
+    }     
   },  
-  // props: {
-  //   comp: {
-  //     type: Object,
-  //     required: true
-  //   },
-  //   dragEnable:{
-  //     type: Boolean,
-  //     default: true
-  //   },
-  //   animatable:{
-  //     type: Boolean,
-  //     default: true
-  //   }    
-  // },
   data: function(){
     return {
       parentWidth: 0,
@@ -75,29 +68,43 @@ export default {
   },
   computed:{
     isAnimated: function(){
-      return ! (this.currentComp.animate.name === 'none') && this.animatable;;
+      return ! (this.comp.animate.name === 'none') && this.animatable;;
     },
     fixStyle: function(){
       var tmp = {};
-      for(var prop in this.currentComp.style){
+      for(var prop in this.comp.style){
         if( ['left','top','width','height'].indexOf(prop) > -1 ){
-          tmp[prop] = this.currentComp.style[prop] + 'px';
+          tmp[prop] = this.comp.style[prop] + 'px';
+        }
+        else if( ['fontSize'].indexOf(prop) > -1){
+          var value = String(this.comp.style[prop]);
+          if( value.indexOf('px') < 0) {
+            tmp[prop] = value + 'px';
+          }
         }
         else if(['transform'].indexOf(prop) > -1){
-          tmp[prop] = 'rotate(' + this.currentComp.style[prop] + 'deg)';
+          tmp[prop] = 'rotate(' + this.comp.style[prop] + 'deg)';
         }
         else{
-          tmp[prop] = this.currentComp.style[prop]
+          tmp[prop] = this.comp.style[prop]
         }
       }
       return tmp;
     },
     animateStyle: function(){
       return {
-        animationName: this.currentComp.animate.name, 
-        animationDuration: this.currentComp.animate.duration + 's',
-        animationDelay: this.currentComp.animate.delay + 's'
+        animationName: this.comp.animate.name, 
+        animationDuration: this.comp.animate.duration + 's',
+        animationDelay: this.comp.animate.delay + 's'
       };
+    }
+  },
+  methods: {
+    changeActiveCompPostion: function(position, flag){
+      var config = {
+        position: position
+      };
+      this.changeActiveComp(config, flag);
     }
   },
   components:{

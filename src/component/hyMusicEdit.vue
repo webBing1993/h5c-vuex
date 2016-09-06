@@ -60,23 +60,24 @@
 </div>
 </template>
 <script>
+
+import * as actions from '../vuex/actions'
+
 module.exports = {
+  vuex: {
+    getters: {
+      slide: state => state.slide,
+      activePageIndex: state => state.activePageIndex,
+      comp: state => state.currentComp
+    },
+    actions: actions
+  },   
   data: function(){
     return {
       musiclist: [],
       currentPlayMusic: null,
       tags: [],
       currentTag: null      
-    }
-  },
-  props: {
-    slide: {
-      type: Object,
-      required: true
-    },    
-    comp: {
-      type: Object,
-      required: true
     }
   },
   computed:{
@@ -187,21 +188,21 @@ module.exports = {
       this.currentTag = tag;
       this.getMusicList();
     },
-    selectMusic: function( item){
-      this.slide.music = {
+    selectMusic: function( item ){
+      this.updateSideMusic({
         name: item.source_name,
         id: item.source_id
-      }
+      })
       this.currentPlayMusic = item;
       this.$nextTick(function(){
         this.$els.music.play();
       });
     },
     unSelectMusic: function() {
-      this.slide.music = {
-        name: "",
-        id: ""
-      }
+      this.updateSideMusic({
+        name: '',
+        id: null
+      })
     },
     playMusic: function( item, event ){
       if(this.currentPlayMusic == item) {

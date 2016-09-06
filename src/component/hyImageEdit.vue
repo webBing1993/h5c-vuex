@@ -10,39 +10,73 @@
       <div class="tab-pane active">
         <div class="form-group-item">
           <div class="title">透明</div>
-          <slider class="flex-col-5" :min="0" :max="100" :step="0" :value.sync="opacity"></slider>
-          <!-- <input type="text" v-model="opacity" number> -->
+          <slider class="flex-col-5" 
+            :min="0" :max="100" :step="0" 
+            :value="opacity"
+            @value-change="changeActiveCompOpacity">
+          </slider>
           <div class="flex-col-1">
-            <input type="text" v-validate="opacity" :min="0" :max="100" :value="opacity">
+            <ui-text 
+              :value="comp.style.opacity"
+              :min="0" :max="100" type="float"
+              @value-change="changeActiveCompOpacity"
+              >
+            </ui-text>
           </div>
           <div class="suffix">%</div>
         </div>
         <div class="form-group-item">
           <div class="title">圆角</div>
-          <slider class="flex-col-5" :min="0" :max="50" :step="0" :value.sync="comp.style.borderRadius"></slider>
-          <!-- <input type="text" v-model="comp.style.borderRadius" number> -->
+          <slider class="flex-col-5" 
+            :min="0" :max="50" :step="0" 
+            :value="comp.style.borderRadius"
+            @value-change="changeActiveCompBorderRadius">
+          </slider>
           <div class="flex-col-1">
-            <input type="text" v-validate="comp.style.borderRadius" :min="0" :max="50" :value="comp.style.borderRadius">
+            <ui-text 
+              :value="comp.style.borderRadius"
+              :min="0" :max="50" type="float"
+              @value-change="changeActiveCompBorderRadius"
+              >
+            </ui-text>
           </div>
           <label class="suffix">%</label>
         </div>
         <div class="form-group-item">
           <div class="title">阴影</div>
-          <slider class="flex-col-5" :min="0" :max="200" :step="0" :value.sync="comp.style.boxShadow"></slider>
-          <!-- <input type="text" v-model="comp.style.boxShadow" number> -->
+          <slider class="flex-col-5" 
+            :min="0" :max="200" :step="0" 
+            :value="comp.style.boxShadow"
+             @value-change="changeActiveCompBoxShadow"
+            >
+          </slider>
           <div class="flex-col-1">
-            <input type="text" v-validate="comp.style.boxShadow" :min="0" :max="200" :value="comp.style.boxShadow">
+            <ui-text 
+              :value="comp.style.boxShadow"
+              :min="0" :max="200" type="float"
+              @value-change="changeActiveCompBorderRadius"
+              >
+            </ui-text>
           </div>
           <label class="suffix">px</label>
         </div>
         <div class="form-group-item">
-          <div class="title">旋转</div>
-          <slider class="flex-col-5" :min="0" :max="360" :step="0" :value.sync="comp.position.transform"></slider>
-          <!-- <input type="text" v-model="comp.position.transform" number> -->
+          <span class="title">旋转:</span>
+          <slider class="flex-col-5" 
+            :min="0" :max="360" :step="0" 
+            :value="comp.position.transform"
+            @value-change="changeActiveCompTransform"
+            >
+          </slider>            
           <div class="flex-col-1">
-            <input type="text" v-validate="comp.position.transform" :min="0" :max="360" :value="comp.position.transform">
+            <ui-text 
+              :value="comp.position.transform"
+              :min="0" :max="360" type="int"
+              @value-change="changeActiveCompTransform"
+              >
+            </ui-text>
           </div>
-          <label class="suffix">度</label>
+          <div class="suffix">度</div>
         </div>
         <div class="form-group-item">
           <hr>
@@ -95,13 +129,23 @@
 </div>
 </template>
 <script>
+
+import * as actions from '../vuex/actions'
+
+import slider from'../plugin/slider.vue'
+import uiText from '../plugin/uiText.vue'
+import animate from'../plugin/animate.vue'
+import pictureDialog from '../plugin/pictureDialog.vue'
+
 module.exports = {
-  props: {
-    comp: {
-      type: Object,
-      required: true
-    }
-  },
+  vuex: {
+    getters: {
+      slide: state => state.slide,
+      activePageIndex: state => state.activePageIndex,
+      comp: state => state.currentComp
+    },
+    actions: actions
+  }, 
   data: function(){
     return {
       showPictureDialog: false
@@ -136,19 +180,55 @@ module.exports = {
         });        
       },0)
     },
+    changeActiveCompOpacity: function(value, flag){
+      var config = {
+        style: {
+          opacity: value
+        }
+      };
+      this.changeActiveComp(config, flag); 
+    },
+    changeActiveCompBorderRadius: function(value, flag){
+      var config = {
+        style: {
+          borderRadius: value
+        }
+      };
+      this.changeActiveComp(config, flag); 
+    },
+    changeActiveCompBoxShadow: function(value, flag){
+      var config = {
+        style: {
+          boxShadow: value
+        }
+      };
+      this.changeActiveComp(config, flag); 
+    },
+    changeActiveCompTransform: function(value, flag){
+      var config = {
+        position: {
+          transform: value
+        }
+      };
+      this.changeActiveComp(config, flag);       
+    },
     changePic: function(){
       this.showPictureDialog = true;
     }
   },
   events: {
-    changePictrue: function (imgSrc) {
-      this.comp.imgSrc = imgSrc;
+    changePictrue: function (imgSrc, flag) {
+      var config = {
+        imgSrc: imgSrc
+      };
+      this.changeActiveComp(config, true); 
     }
   },   
   components: {
-    animate: require('../plugin/animate.vue'),
-    slider: require('../plugin/slider.vue'),
-    pictureDialog : require('../plugin/pictureDialog.vue')
+    uiText,
+    animate,
+    slider,
+    pictureDialog
   }  
 }
 </script>
