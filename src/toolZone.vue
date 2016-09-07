@@ -53,59 +53,19 @@ export default {
     },
     editMusic: function(){
       this.updateActiveComp('music');
-    },
-    addForm: function(){
-      // this.$dispatch("showFormZone");
-      this.showFormDialog = true;
     },    
     addText: function(){
       this.updateActiveComp('text');
     },
+    addButton: function(){
+      this.updateActiveComp('button'); 
+    },
     addImage: function(){
       this.showPictureDialog = true;
-    },
-    addButton: function(){
-      if( this.currentPage ) {
-        this.currentPage.comps.push({
-          type: 'hy-button',
-          text: '按钮',
-          link: null,
-          active: false,
-          isShowView: true,
-          isShowEdit: true,
-          isShowAnimate: false,
-          animate:{
-            name: "none",
-            duration: 1,
-            delay: 0
-          },
-          position:{
-            left: 60,
-            top: 200,
-            width: 197,
-            height: 50,
-            transform: 0
-          },      
-          style:{
-            fontFamily: 'Microsoft Yahei',
-            fontSize: 24,
-            color: '#835353',
-            backgroundColor: '#F8E71C',
-            borderWidth: 1,
-            borderColor: '#ccccc',
-            borderStyle: 'solid',
-            borderRadius: 2,
-            opacity: 1,
-            fontWeight: 'normal',
-            fontStyle: 'normal',
-            textDecoration: 'normal',
-            textAlign: 'center'
-          }
-        });
-        var len = this.currentPage.comps.length;
-        this.currentComp = this.currentPage.comps[len -1 ];        
-      }     
-    }
+    },    
+    addForm: function(){
+      this.showFormDialog = true;
+    }   
   },
   events: {
     changePictrue: function (imgSrc) {
@@ -140,14 +100,22 @@ export default {
           list = [{
             type:'xRadio',
             name:'请输入问题',
-            items: ["选项一", "选项二","选项三"]
+            items: [
+              { name: "选项一" }, 
+              { name: "选项二" },
+              { name: "选项三" }
+            ]
           }];         
         break;
         case 3:
           list = [{
             type:'xCheckbox',
             name:'请输入问题',
-            items: ["选项一", "选项二","选项三"]
+            items: [
+              { name: "选项一" }, 
+              { name: "选项二" },
+              { name: "选项三" }
+            ]
           }];         
         break;
         default:

@@ -10,7 +10,7 @@ let defautPageSetting = function() {
       backgroundColor: '#ffffff',
       image: null
     },
-    comps: []
+    comps:[]
   }
 };
 const state = {
@@ -36,63 +36,63 @@ const state = {
   tpl: -1
 }
 const mutations = {
-  UPDATE_ID(state, id) {
+  UPDATE_ID (state, id) {
     state.id = id
   },
   // 页面 - 选中
-  ACTIV_SLIDE_PAGE_INDEX(state, index) {
+  ACTIV_SLIDE_PAGE_INDEX (state, index){
     state.activePageIndex = index
   },
   // 页面 - 添加
-  ADD_SLIDE_PAGE(state) {
+  ADD_SLIDE_PAGE (state){
     state.slide.pages.push(defautPageSetting())
-    state.activePageIndex = state.slide.pages.length - 1
+    state.activePageIndex = state.slide.pages.length -1
   },
   // 页面 - 删除
-  DEL_SLIDE_PAGE(state, index) {
+  DEL_SLIDE_PAGE (state, index){
     state.slide.pages.splice(index, 1)
-    if (state.activePageIndex >= state.slide.pages.length - 1) {
+    if(state.activePageIndex >= state.slide.pages.length - 1 ){
       state.activePageIndex = state.slide.pages.length - 1
     }
   },
   // 页面 - 复制
-  COPY_SLIDE_PAGE(state, index) {
+  COPY_SLIDE_PAGE (state, index) {
     let newPage = _.cloneDeep(state.slide.pages[index])
     state.slide.pages.splice(index + 1, 0, newPage)
   },
   // 页面 - 更新 title 
-  UPDATE_ACTIVE_PAGE_TILTE(state, mutation) {
+  UPDATE_ACTIVE_PAGE_TILTE (state, mutation) {
     let index = state.activePageIndex
-    state.slide.pages[index].title = mutation.payload.value;
+    state.slide.pages[index].title =  mutation.payload.value;
   },
   // 页面 - 更新 background-color 
-  UPDATE_ACTIVE_PAGE_BACKGROUND_COLOR(state, mutation) {
+  UPDATE_ACTIVE_PAGE_BACKGROUND_COLOR (state, mutation){
     let index = state.activePageIndex
     state.slide.pages[index].style.backgroundColor = mutation.payload.value;
   },
   // 页面 - 更新 image 
-  UPDATE_ACTIVE_PAGE_IMAGE(state, mutation) {
+  UPDATE_ACTIVE_PAGE_IMAGE (state, mutation){
     let index = state.activePageIndex
     state.slide.pages[index].style.image = mutation.payload.value;
-  },
+  },  
   // 页面 - 更新 music
-  UPDATE_SLIDE_MUSIC(state, mutation) {
+  UPDATE_SLIDE_MUSIC (state, mutation){
     state.slide.music = mutation.payload.music;
-  },
+  },   
   // 组件 - 激活，增加
-  UPDATE_ACTIVE_COMP(state, mutation) {
+  UPDATE_ACTIVE_COMP (state, mutation) {
     let type = mutation.payload.type
     let config = mutation.payload.config
     let index = state.activePageIndex
 
-    if (['page', 'music'].indexOf(type) >= 0) {
+    if ( ['page', 'music'].indexOf(type) >= 0 ) {
       state.currentComp = config
-    } 
+    }
     else {
       state.slide.pages[index].comps.push(config)
       let len = state.slide.pages[index].comps.length;
       state.currentComp = state.slide.pages[index].comps[len - 1]
-      state.slide.pages[index].comps.map(function(item) {
+      state.slide.pages[index].comps.map(function(item){
         item.active = false;
         return item;
       });
@@ -100,40 +100,56 @@ const mutations = {
     }
   },
   // 组件 - 修改
-  CHANGE_ACTIVE_COMP(state, mutation) {
+  CHANGE_ACTIVE_COMP (state, mutation) {
     _.merge(state.currentComp, mutation.payload.config)
+    // let pageIndex = state.activePageIndex
+    // let compIndex = state.currentCompIndex
+    // state.slide.pages[pageIndex].comps[compIndex] = mutation.payload.config;
+    // state.slide.pages[pageIndex].comps = state.slide.pages[pageIndex].comps.slice(0);
+    // _.merge(state.currentComp, mutation.payload.config)
+    // state.slide.pages[index].comps = state.slide.pages[index].comps.slice(0)
+    // state.slide = _.cloneDeep(state.slide)
+    // state.slide.pages[state.activePageIndex].comps[state.currentCompIndex] = state.currentComp
+    // console.log(JSON.parse(JSON.stringify(state.currentComp)));
+    // console.log(state.slide.pages[state.activePageIndex].comps[state.currentCompIndex] === state.currentComp );
   },
-  // 组件 - 针对比较复杂的模块，比如表单编辑
+  // 组件 - 修改
   CHANGE_ACTIVE_COMP_FIX(state, mutation) {
+    debugger;
     let pageIndex = state.activePageIndex
     let compIndex = state.currentCompIndex
-    let comp = _.assign(_.cloneDeep(state.currentComp), mutation.payload.config)
-    state.slide.pages[pageIndex].comps[compIndex] = comp;
+    state.slide.pages[pageIndex].comps[compIndex] = mutation.payload.config;
     state.slide.pages[pageIndex].comps = state.slide.pages[pageIndex].comps.slice(0);
     state.currentComp = state.slide.pages[pageIndex].comps[compIndex]
-  },
+    // _.merge(state.currentComp, mutation.payload.config)
+    // state.slide.pages[index].comps = state.slide.pages[index].comps.slice(0)
+    // state.slide = _.cloneDeep(state.slide)
+    // state.slide.pages[state.activePageIndex].comps[state.currentCompIndex] = state.currentComp
+    // console.log(JSON.parse(JSON.stringify(state.currentComp)));
+    // console.log(state.slide.pages[state.activePageIndex].comps[state.currentCompIndex] === state.currentComp );
+  },  
   // 组件 - 激活
-  ACTIVE_COMP(state, mutation) {
-    state.slide.pages[state.activePageIndex].comps.map(function(item) {
+  ACTIVE_COMP (state, mutation){
+    state.slide.pages[state.activePageIndex].comps.map(function(item){
       item.active = false
       return item
     })
     state.currentComp = mutation.payload.comp
     state.currentCompIndex = mutation.payload.index
     state.currentComp.active = true
-  }
+  } 
 }
 const plugins = [function(store) {
   store.subscribe((mutation, state) => {
     H.hook.$emit('vuex:mutation', state)
   });
-  store.watch(function(state) {
+  store.watch(function(state){
     return state.slide;
-  }, function(slide) {
-    // console.log('watch:', slide);
-  }, {
+  }, function(slide){
+    console.log('watch:', slide);
+  },{
     deep: true
-  })
+  })  
 }]
 
 export default new Vuex.Store({

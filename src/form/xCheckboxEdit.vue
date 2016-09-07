@@ -1,15 +1,23 @@
 <template>
 <div>  
   <div class="title">
-    <input type="text" v-model="item.name">
-    <span>多选</span>
+   <input type="text" 
+      :value="item.name"
+      @input="changeNameValue"
+      @blur="changeNameValue($event, true)"
+    >
+    <span>单选</span>
   </div>
   <div class="form-item" v-for="(index,item) in item.items" track-by="$index">
     <label>
-      <button class="del" @click="del(item)">
+      <button class="del" @click="del(index)">
         <span class="icon-minus"></span>
       </button>
-      <input type="text" v-model="item">
+     <input type="text" 
+        :value="item.name"
+        @input="changeItemNameValue($event, index, false)"
+        @blur="changeItemNameValue($event, index, true)"
+      >
     </label>
   </div>
   <div class="form-item">
@@ -19,6 +27,47 @@
   </div>
 </div>
 </template>
+<script>
+module.exports = {
+  props: {
+    item: {
+      type: Object,
+      required: true
+    },
+    index: {
+      type: Number
+    }
+  },
+  methods: {
+    add: function(){
+      var item = _.cloneDeep(this.item)
+      item.items.push({name: "选项"});
+      this.$dispatch('value-change', this.index, item, true);
+    },
+    del: function(index){
+      var item = _.cloneDeep(this.item)
+      item.items.splice(index, 1);
+      this.$dispatch('value-change', this.index, item, true);
+    },
+    changeNameValue: function(event, flag){
+      var value = event.target.value
+      var item = _.cloneDeep(this.item)
+      item = _.merge(item, {
+        name: value
+      });
+      this.$dispatch('value-change', this.index, item, flag);
+    },
+    changeItemNameValue:function(event, index, flag){
+      var value = event.target.value
+      var item = _.cloneDeep(this.item)
+      item.items[index] = {
+        name: value
+      };
+      this.$dispatch('value-change', this.index, item, flag);
+    }         
+  }
+}
+</script>
 <style scoped>
   .title {
     margin: 5px 0;
@@ -52,38 +101,3 @@
     border-radius: 50%;
   }
 </style>
-<script>
-module.exports = {
-  data: function(){
-    return {
-    }
-  },
-  props: {
-    item: {
-      type: Object,
-      twoWay: true,
-      required: true
-    },
-    comp: {
-      type: Object,
-      twoWay: true,
-      required: true
-    }  
-  },
-  computed: { 
-  },
-  methods: {
-    add: function(){
-      this.item.items.push("选项");
-    },
-    del: function(item){
-      this.item.items.$remove(item);
-    },    
-    delItem: function(){
-      this.comp.list.$remove(this.item);
-    }          
-  },
-  components: {
-  }
-}
-</script>

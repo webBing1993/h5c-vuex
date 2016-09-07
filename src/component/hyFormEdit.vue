@@ -9,17 +9,18 @@
       <div class="tab-content">
         <div class="tab-pane active" id="formEdit">
           <div class="wrap">
+            <!-- <pre style="height: 300px; overflow:auto;">{{comp|json}}</pre> -->
             <div class="sortable">
               <template v-for="(index, item) in comp.list" track-by="$index">
                 <div class="form-ele-wrap" :index="index">
                   <component 
-                    :is="item.type + 'Edit'"
+                    :is="item.type + '-edit'"
                     :item="item" 
                     :index="index"
                     @value-change="valueChange"
                     >
                   </component>
-                  <a @click="delItem(item)" class="btn-del-item" href="javascript:;">
+                  <a @click="delFormItem(index)" class="btn-del-item" href="javascript:;">
                     <span class="icon-remove"></span>
                   </a>
                 </div>
@@ -30,7 +31,11 @@
                 按钮文字
               </div>
               <div class="form-item">
-                <input type="text" v-model="comp.btn.text">
+                <ui-text 
+                  :value="comp.btn.text"
+                  @value-change="changeBtnTextValue"
+                  >
+                </ui-text>              
               </div>            
             </div>
 
@@ -39,7 +44,11 @@
                 提交后提示语
               </div>
               <div class="form-item">
-                <input type="text" v-model="comp.feedback.text">
+                <ui-text 
+                  :value="comp.feedback.text"
+                  @value-change="changeFeedbackValue"
+                  >
+                </ui-text>                  
               </div>
             </div>
 
@@ -212,26 +221,30 @@ module.exports = {
     } 
   },
   ready: function(){
-    // var _this = this;
-    // $( ".sortable" ).sortable({
-    //   stop: function(event, ui){
-    //     var $item = $(ui.item);
-    //     var index = $item.attr('index');
-    //     var currentIndex = $('.sortable .form-ele-wrap').index($item);
-    //     var currentData = _this.comp.list[index];
+    var _this = this;
+    $( ".sortable" ).sortable({
+      stop: function(event, ui){
+        var $item = $(ui.item);
+        var index = $item.attr('index');
+        var currentIndex = $('.sortable .form-ele-wrap').index($item);
+        var currentData = _this.comp.list[index];
         
-    //     if(index < currentIndex){
-    //       _this.comp.list.splice(currentIndex + 1,0, currentData);
-    //       _this.comp.list.splice(index,1);
-    //     }
-    //     else if(index > currentIndex){
-    //       _this.comp.list.splice(index,1);
-    //       _this.comp.list.splice(currentIndex ,0, currentData);
-    //     }
-    //     _this.comp.list = _this.comp.list.slice(0);
-    //     console.log(index,currentIndex);
-    //   }
-    // });
+        var list = _.cloneDeep(_this.comp.list);
+
+        if(index < currentIndex){
+         list.splice(currentIndex + 1,0, currentData);
+         list.splice(index,1);
+        }
+        else if(index > currentIndex){
+         list.splice(index,1);
+         list.splice(currentIndex ,0, currentData);
+        }
+        var config = {
+          list: list
+        };
+        _this.changeActiveCompFix(config, true); 
+      }
+    });
   },
   methods: {
     switchPanel: function(index){
@@ -249,47 +262,6 @@ module.exports = {
           scrollbars: false
         }); 
       });
-    },
-    addFormItem: function(type){
-      var list = null;
-      switch(type){
-        case 0:
-          list = {
-            type:'xText',
-            name:'请输入字段名',
-            required: true
-          };        
-        break;        
-        case 1:
-          list = {
-            type:'xStar',
-            name:'请输入评分项',
-            defualt: 0
-          };         
-        break;
-        case 2:
-          list = {
-            type:'xRadio',
-            name:'请输入问题',
-            items: ["选项一", "选项二"]
-          };         
-        break;
-        case 3:
-          list = {
-            type:'xCheckbox',
-            name:'请输入问题',
-            items: ["选项一", "选项二"]
-          };         
-        break;
-        default:
-          throw new Errow('错误, 未知表单模版类型');
-      }      
-      this.comp.list.push(list);
-      this.activeScroll();
-    },
-    delItem: function(item){
-      this.comp.list.$remove(item);
-      this.activeScroll();
     },
     toggleActive: function(event){
       $(event.currentTarget).toggleClass('active');
@@ -343,16 +315,81 @@ module.exports = {
         }
       };
       this.changeActiveComp(config, flag);       
-    },        
+    },
+    changeBtnTextValue: function(value ,flag){
+      var config = {
+        btn: {
+          text: value
+        }
+      };
+      this.changeActiveComp(config, flag); 
+    },
+    changeFeedbackValue: function(value ,flag){
+      var config = {
+        feedback: {
+          text: value
+        }
+      };
+      this.changeActiveComp(config, flag); 
+    },
+    addFormItem: function(type){
+      var list = null;
+      switch(type){
+        case 0:
+          list = {
+            type:'xText',
+            name:'请输入字段名',
+            required: true
+          };        
+        break;        
+        case 1:
+          list = {
+            type:'xStar',
+            name:'请输入评分项',
+            defualt: 0
+          };         
+        break;
+        case 2:
+          list = {
+            type:'xRadio',
+            name:'请输入问题',
+            items: [{name: "选项一"}, {name:"选项二"}]
+          };         
+        break;
+        case 3:
+          list = {
+            type:'xCheckbox',
+            name:'请输入问题',
+            items: [{name: "选项一"}, {name:"选项二"}]
+          };         
+        break;
+        default:
+          throw new Errow('错误, 未知表单模版类型');
+      } 
+      var tmplist = _.cloneDeep(this.comp.list);   
+      tmplist.push(list);
+      var config = {
+        list: tmplist
+      };
+      this.changeActiveCompFix(config, true); 
+      this.activeScroll();
+    },
+    delFormItem: function(index){
+      var list = _.cloneDeep(this.comp.list);
+      list.splice(index, 1);
+      var config = {
+        list: list
+      };
+      this.changeActiveCompFix(config, true);      
+      this.activeScroll();
+    },
     valueChange: function( index, value, flag ){
-      console.log(index, value, flag);
       var list = _.cloneDeep(this.comp.list);
       list[index] = value;
       var config = {
         list: list
       };
-      console.log('changeActiveComp', config);
-      this.changeActiveComp(config, flag); 
+      this.changeActiveCompFix(config, flag); 
     } 
   },
   components: {

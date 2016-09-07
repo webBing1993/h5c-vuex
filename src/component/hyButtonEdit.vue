@@ -37,19 +37,19 @@
           </div>
           <div class="form-group-item">
             <span class="title">文字色:</span>
-            <div class="flex-col-6">
+            <div class="flex-col-5">
               <color-pick class="flex-col-7 color-picker" :color.sync="comp.style.color"></color-pick>
             </div>
           </div>
           <div class="form-group-item">
             <span class="title">填充色:</span>
-            <div class="flex-col-6">
+            <div class="flex-col-5">
               <color-pick class="flex-col-7 color-picker" :color.sync="comp.style.backgroundColor"></color-pick>
             </div>
           </div>
           <div class="form-group-item">
             <span class="title">边框色:</span>
-            <div class="flex-col-6">
+            <div class="flex-col-5">
               <color-pick class="flex-col-7 color-picker" :color.sync="comp.style.borderColor"></color-pick>
             </div>
           </div>
@@ -140,6 +140,78 @@
     </div>
   </div>
 </template>
+
+<script>
+
+import * as actions from '../vuex/actions'
+
+import slider from'../plugin/slider.vue'
+import uiText from '../plugin/uiText.vue'
+import animate from'../plugin/animate.vue'
+import colorPick from'../plugin/colorPick.vue'
+
+var arrFontSize = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119];
+
+module.exports = {
+  vuex: {
+    getters: {
+      slide: state => state.slide,
+      activePageIndex: state => state.activePageIndex,
+      comp: state => state.currentComp
+    },
+    actions: actions
+  },
+  data: function(){
+    return {
+      arrFontSize: arrFontSize,
+      linkErr: false
+    }
+  },  
+  computed: {
+    opacity: {
+      get: function () {
+        return 100 - (this.comp.style.opacity * 100);
+      },
+      set: function (newValue) {
+        this.comp.style.opacity = (100 - newValue) / 100;
+      }      
+    } 
+  },
+  methods: {
+    switchPanel: function(index){
+      $('#textEditPanel').find('.nav-tabs li').removeClass('active');
+      $('#textEditPanel').find('.nav-tabs li').eq(index).addClass('active');
+      $('#textEditPanel .tab-pane').css('visibility', 'hidden');
+      $('#textEditPanel .tab-pane').eq(index).css('visibility', 'visible')
+    },
+    checklink: function(evt){
+      var _this = this;
+      var value = evt.target.value;
+      var reg = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+      if(reg.test(value) || !value){
+        this.linkErr = false;
+      }
+      else{
+        this.linkErr = true;
+        if(this.linkErrHandel) {
+          clearTimeout(this.linkErrHandel);
+        }
+        this.linkErrHandel = setTimeout(function(){
+          _this.linkErr = false;
+        },1000)
+      }
+      this.comp.link = value;
+    }
+  },
+  components: {
+    uiText,
+    animate,
+    colorPick,
+    slider
+  }
+}
+</script>
+
 <style scoped>
   .tab-content > .tab-pane {
     display: block;
@@ -194,61 +266,3 @@
     border-bottom-color: #fcdede;  
   }
 </style>
-<script>
-var arrFontSize = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119];
-module.exports = {
-  data: function(){
-    return {
-      arrFontSize: arrFontSize,
-      linkErr: false
-    }
-  },
-  props: {
-    comp: {
-      type: Object,
-      required: true
-    }
-  },
-  computed: {
-    opacity: {
-      get: function () {
-        return 100 - (this.comp.style.opacity * 100);
-      },
-      set: function (newValue) {
-        this.comp.style.opacity = (100 - newValue) / 100;
-      }      
-    } 
-  },
-  methods: {
-    switchPanel: function(index){
-      $('#textEditPanel').find('.nav-tabs li').removeClass('active');
-      $('#textEditPanel').find('.nav-tabs li').eq(index).addClass('active');
-      $('#textEditPanel .tab-pane').css('visibility', 'hidden');
-      $('#textEditPanel .tab-pane').eq(index).css('visibility', 'visible')
-    },
-    checklink: function(evt){
-      var _this = this;
-      var value = evt.target.value;
-      var reg = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-      if(reg.test(value) || !value){
-        this.linkErr = false;
-      }
-      else{
-        this.linkErr = true;
-        if(this.linkErrHandel) {
-          clearTimeout(this.linkErrHandel);
-        }
-        this.linkErrHandel = setTimeout(function(){
-          _this.linkErr = false;
-        },1000)
-      }
-      this.comp.link = value;
-    }
-  },
-  components: {
-    animate: require('../plugin/animate.vue'),
-    colorPick: require('../plugin/colorPick.vue'),
-    slider: require('../plugin/slider.vue')
-  }
-}
-</script>

@@ -27,6 +27,7 @@ module.exports = {
     changeNameValue: function(event, flag){
       var value = event.target.value
       this.$dispatch('value-change', this.index, {
+        type: 'xText',
         name: value,
         required: this.item.required
       });
@@ -34,6 +35,7 @@ module.exports = {
     changeRequireValue: function(event, flag){
       var value = event.target.checked
       this.$dispatch('value-change', this.index, {
+        type: 'xText',
         name: this.item.name,
         required: value
       }, flag);

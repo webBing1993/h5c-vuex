@@ -8,7 +8,7 @@
         <input type="checkbox" :name="item.name">
         <span class="icon-check-empty"></span>
         <span class="icon-check"></span>
-        {{entry}}
+        {{entry.name}}
       </label>
     </div>
   </div>

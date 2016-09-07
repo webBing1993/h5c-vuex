@@ -1,6 +1,5 @@
 <template>
 <div class="hy-comp-button">
- <!-- <pre>{{comp | json}}</pre>  -->
   <drag 
     :active="comp.active"
     :enable="dragEnable"

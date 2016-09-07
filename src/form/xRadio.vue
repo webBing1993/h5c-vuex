@@ -8,7 +8,7 @@
         <input type="radio" :name="item.name">
         <span class="icon-circle-blank"></span>
         <span class="icon-ok-circle"></span>
-        {{entry}}
+        {{entry.name}}
       </label>
     </div>
   </div>

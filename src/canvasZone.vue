@@ -4,8 +4,12 @@
     <div class="edit-area">
       <div class="f-ab page-container">
         <hy-music v-show="slide.music && slide.music.id" :music="slide.music"></hy-music>
+        
         <div class="f-ab page" :style="currentPage.style">
-          <img style="width:100%;height:100%;" :src="currentPage.style.image | realImgSrc"> 
+          
+          <img style="width:100%;height:100%;" 
+            :src="currentPage.style.image | realImgSrc"> 
+          
           <div class="debug">
            <h3>currentPage</h3>
            <pre>{{currentPage | json}}</pre> 
@@ -13,11 +17,11 @@
           
           <component  
             class="hy-comp"
-            v-for="(index, comp) in currentPage.comps" track-by="$index"
+            v-for="(index, comp) in currentPage.comps"
             :is="comp.type"
             :comp="comp"
-            @click.stop="activeComp(comp, index, true)"
-            @mousedown.stop="activeComp(comp, index, true)"            
+            @click.stop="activeComp(comp, index)"
+            @mousedown.stop="activeComp(comp, index)"
             >
           </component >             
         </div>            
@@ -44,10 +48,12 @@
 import * as actions from './vuex/actions'
 
 import toolZone from './toolZone.vue'
-import hyText from './component/hyText.vue'
-import hyImage from './component/hyImage.vue'
-import hyMusic from './component/hyMusic.vue'
-import hyForm from './component/hyForm.vue'
+
+import hyText   from './component/hyText.vue'
+import hyImage  from './component/hyImage.vue'
+import hyMusic  from './component/hyMusic.vue'
+import hyForm   from './component/hyForm.vue'
+import hyButton from './component/hyButton.vue'
 
 export default {
   vuex: {
@@ -80,18 +86,18 @@ export default {
     }
   },
   components: {
-    toolZone, hyText, hyImage, hyMusic, hyForm
+    toolZone, hyText, hyImage, hyMusic, hyForm, hyButton
   }
 }
 </script>
 <style>
-   .debug{
+  .debug{
     position: absolute;
     top: 0;
     left: -240px;
     overflow: auto;  
     height: 600px;
-   }
+  }
   .edit-area-wrap{
     position: relative;
     box-sizing: content-box;

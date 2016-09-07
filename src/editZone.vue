@@ -1,11 +1,10 @@
 <template>
   <div class="f-ab edit-zone">
-    <component
-      :is="currentComp.type + '-edit'"
-      >
+    <component :is="currentComp.type + '-edit'">
     </component>
   </div>  
 </template>
+
 <script>
 import * as actions from './vuex/actions'
 
@@ -14,25 +13,16 @@ import hyTextEdit from './component/hyTextEdit.vue'
 import hyImageEdit from './component/hyImageEdit.vue'
 import hyMusicEdit from './component/hyMusicEdit.vue'
 import hyFormEdit from './component/hyFormEdit.vue'
+import hyButtonEdit from './component/hyButtonEdit.vue'
 
 export default {
   vuex: {
     getters: {
-      slide: state => state.slide,
-      activePageIndex: state => state.activePageIndex,
       currentComp: state => state.currentComp
-    },
-    actions: actions
-  },
-  computed:{
-    currentPage: function(){
-      return this.slide.pages[this.activePageIndex];
     }
   },
-  methods: {
-  },
   components: {
-    hyPageEdit, hyTextEdit, hyImageEdit, hyMusicEdit, hyFormEdit
+    hyPageEdit, hyTextEdit, hyImageEdit, hyMusicEdit, hyFormEdit, hyButtonEdit
   }
 }
 </script>

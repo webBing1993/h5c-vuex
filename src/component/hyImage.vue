@@ -1,40 +1,26 @@
 <template>
   <div class="hy-comp-image" :style="{zIndex: comp.zIndex}">
     <drag
-    v-el:drag
-    :active="comp.active"
-    :enable="dragEnable"
-    :top="comp.position.top"
-    :left="comp.position.left"
-    :width="comp.position.width"
-    :height="comp.position.height"
-    :transform="comp.position.transform"
-    @postion-change="changeActiveCompPostion">
-      <div class="img-wrap" 
-        :class="{'animated': isAnimated}" 
-        :style="[fixStyle, animateStyle]">
-        <img :src="comp.imgSrc | realImgSrc">
-      </div>
+      v-el:drag
+      :active="comp.active"
+      :enable="dragEnable"
+      :top="comp.position.top"
+      :left="comp.position.left"
+      :width="comp.position.width"
+      :height="comp.position.height"
+      :transform="comp.position.transform"
+      @postion-change="changeActiveCompPostion">
+        <div class="img-wrap" 
+          :class="{'animated': isAnimated}" 
+          :style="[fixStyle, animateStyle]">
+            <img :src="comp.imgSrc | realImgSrc">
+        </div>
     </drag>
   </div>
 </template>
-<style>
-  .hy-comp-image {
-    position: absolute;
-    top:0;
-    left:0;
-  }
-  .hy-comp-image  .img-wrap{
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-  .hy-comp-image  .img-wrap img{
-    width: 100%;
-    height: 100%;
-  }
-</style>
+
 <script>
+
 import * as actions from '../vuex/actions'
 
 module.exports = {
@@ -43,13 +29,6 @@ module.exports = {
     },
     actions: actions
   },  
-  data: function(){
-    return {
-      showContextMenu: false,
-      offsetTop:0,
-      offsetLeft:0
-    }
-  },
   props: {
     comp: {
       type: Object
@@ -63,6 +42,13 @@ module.exports = {
       default: true
     }     
   },
+  data: function(){
+    return {
+      showContextMenu: false,
+      offsetTop:0,
+      offsetLeft:0
+    }
+  },  
   computed: {
     isAnimated: function(){
       return !(this.comp.animate.name === 'none') && this.animatable;
@@ -114,3 +100,20 @@ module.exports = {
   }
 }
 </script>
+
+<style>
+  .hy-comp-image {
+    position: absolute;
+    top:0;
+    left:0;
+  }
+  .hy-comp-image  .img-wrap{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  .hy-comp-image  .img-wrap img{
+    width: 100%;
+    height: 100%;
+  }
+</style>

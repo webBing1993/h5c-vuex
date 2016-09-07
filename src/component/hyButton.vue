@@ -3,11 +3,12 @@
   <drag 
     :active="comp.active"
     :enable="dragEnable"
-    :top.sync="comp.position.top"
-    :left.sync="comp.position.left"
-    :width.sync="comp.position.width"
-    :height.sync="comp.position.height"
-    :transform.sync="comp.position.transform"
+    :top="comp.position.top"
+    :left="comp.position.left"
+    :width="comp.position.width"
+    :height="comp.position.height"
+    :transform="comp.position.transform"
+    @postion-change="changeActiveCompPostion"
     :handles="'ne, se, sw, nw'">
     <div class="inner" 
       :class="{'animated': isAnimated}"
@@ -17,28 +18,17 @@
   </drag>
 </div>
 </template>
-<style scoped>
-  .hy-comp-text{
-    position: absolute;
-    top:0;
-    left:0;
-  }
-  .inner {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;    
-  }  
-</style>
+
 <script>
-var findInArray =  function (array, callback) {
-  for (let i = 0, length = array.length; i < length; i++) {
-    if (callback.apply(callback, [array[i], i, array])) return array[i];
-  }
-}
+
+import * as actions from '../vuex/actions'
+
 module.exports = {
+  vuex: {
+    getters: {
+    },
+    actions: actions
+  },   
   props: {
     comp: {
       type: Object,
@@ -94,8 +84,32 @@ module.exports = {
       };
     }
   },
+  methods: {
+    changeActiveCompPostion: function(position, flag){
+      var config = {
+        position: position
+      };
+      this.changeActiveComp(config, flag);
+    }
+  },  
   components:{
     drag: require('../plugin/drag.vue')
   }
 }
 </script>
+
+<style scoped>
+  .hy-comp-text{
+    position: absolute;
+    top:0;
+    left:0;
+  }
+  .inner {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+  }  
+</style>

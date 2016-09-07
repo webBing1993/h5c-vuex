@@ -38,7 +38,9 @@ module.exports = {
     changeNameValue: function(event, flag){
       var value = event.target.value
       this.$dispatch('value-change', this.index, {
-        name: value
+        type: "xStar",
+        name: value,
+        defualt: 0
       }, flag);
     }   
   }

@@ -4,12 +4,13 @@ export const updateId = ({ dispatch }, id) => {
       dispatch('UPDATE_ID', id)
     }
   }
-// 激活 slide page index 更新
+  // 激活 slide page index 更新
 export const activeSlidePageIndex = ({ dispatch }, index) => {
   dispatch('ACTIV_SLIDE_PAGE_INDEX', index);
 }
 
 // Slide page 增加，删除，复制，移动
+
 export const addSlidePage = ({ dispatch }) => {
   dispatch('ADD_SLIDE_PAGE')
 }
@@ -20,6 +21,7 @@ export const delSlidePage = ({ dispatch, state }, index) => {
 export const copySlidePage = ({ dispatch, state }, index) => {
   dispatch('COPY_SLIDE_PAGE', index)
 }
+
 export const updateActivePageTitle = ({ dispatch }, e, flag) => {
   dispatch({
     type: 'UPDATE_ACTIVE_PAGE_TILTE',
@@ -29,6 +31,7 @@ export const updateActivePageTitle = ({ dispatch }, e, flag) => {
     }
   })
 }
+
 export const updateActivePageBackgroundColor = ({ dispatch }, color) => {
   dispatch({
     type: 'UPDATE_ACTIVE_PAGE_BACKGROUND_COLOR',
@@ -38,6 +41,7 @@ export const updateActivePageBackgroundColor = ({ dispatch }, color) => {
     }
   })
 }
+
 export const updateActivePageImage = ({ dispatch }, img) => {
   dispatch({
     type: 'UPDATE_ACTIVE_PAGE_IMAGE',
@@ -171,44 +175,6 @@ export const updateActiveComp = ({ dispatch }, type, data) => {
         }
       }
       break;
-    case 'button':
-      config = {
-        type: 'hy-button',
-        text: '按钮',
-        link: null,
-        active: false,
-        isShowView: true,
-        isShowEdit: true,
-        isShowAnimate: false,
-        animate: {
-          name: "none",
-          duration: 1,
-          delay: 0
-        },
-        position: {
-          left: 60,
-          top: 200,
-          width: 197,
-          height: 50,
-          transform: 0
-        },
-        style: {
-          fontFamily: 'Microsoft Yahei',
-          fontSize: 24,
-          color: '#835353',
-          backgroundColor: '#F8E71C',
-          borderWidth: 1,
-          borderColor: '#ccccc',
-          borderStyle: 'solid',
-          borderRadius: 2,
-          opacity: 1,
-          fontWeight: 'normal',
-          fontStyle: 'normal',
-          textDecoration: 'normal',
-          textAlign: 'center'
-        }
-      }
-      break;
   }
   dispatch({
     type: 'UPDATE_ACTIVE_COMP',
@@ -229,6 +195,7 @@ export const changeActiveComp = ({ dispatch }, config, flag) => {
     }
   })
 }
+
 export const changeActiveCompFix = ({ dispatch }, config, flag) => {
   dispatch({
     type: 'CHANGE_ACTIVE_COMP_FIX',
@@ -238,6 +205,7 @@ export const changeActiveCompFix = ({ dispatch }, config, flag) => {
     }
   })
 }
+
 export const activeComp = ({ dispatch }, comp, index, flag) => {
   dispatch({
     type: 'ACTIVE_COMP',

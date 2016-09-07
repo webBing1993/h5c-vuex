@@ -13,8 +13,9 @@
     <div class="inner" 
       :class="{'animated': isAnimated}" 
       :style="[fixStyle, animateStyle]">
+      <!-- <pre style="height: 300px; overflow:auto;text-align: left;">{{comp|json}}</pre> -->
         <component 
-        v-for="(index, item) in comp.list" track-by="$index"
+        v-for="(index, item) in comp.list"
         :is="item.type"
         :item="item">
         </component>
