@@ -1,7 +1,24 @@
 import Vue from 'vue'
 import store from './vuex/store'
 import App from './App'
-/* eslint-disable no-new */
+
+if( process.env.NODE_ENV !== 'production') {
+  var host = 'http://localhost:4001';
+}
+else {
+  var host = '';
+}
+
+window.Global = {
+  api: {
+    h5: '/api/h5',
+    picture: '/api/picture',
+    music: '/api/music',
+    h5pc: host + "/slider/pc.html#",
+    h5wap: host + "/slider/wap.html#"
+  },
+  isAdmin: false
+}
 
 window.H = {
   hook:  new Vue(),

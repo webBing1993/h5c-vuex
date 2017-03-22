@@ -1,7 +1,19 @@
 <template>
 <div class="f-ab" style="overflow:hidden;">
   <div class="f-ab g-header">
-    <button><i class="icon-save"></i>保存</button>
+    <header-zone class="f-ab g-header">
+      <div slot="btn-right">
+        <button class="btn btn-info btn-sm" @click="set">
+          设置
+        </button>      
+        <button class="btn btn-success btn-sm" @click="preview">
+          <i class="icon-save"></i> 预览
+        </button>
+        <button class="btn btn-primary btn-sm" @click="save">
+          <i class="icon-camera-retro"></i> 发布
+        </button>   
+      </div>
+    </header-zone>
   </div>
   <div class="f-ab g-content">
     <layer-zone>
@@ -18,13 +30,26 @@
 import './assets/css/base.css'
 
 import layerZone from './layerZone.vue'
+import headerZone from './headerZone.vue'
 import editZone from './editZone.vue'
 import canvasZone from './canvasZone.vue'
 
 export default {
   vuex: {
   },
+  methods:{
+    set: function(){
+      console.log('设置');
+    },
+    preview: function(){
+      console.log('预览');
+    },
+    save: function(){
+      console.log('保存')
+    }
+  },
   components: {
+    headerZone,
     layerZone,
     canvasZone,
     editZone

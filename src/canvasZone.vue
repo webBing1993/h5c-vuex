@@ -10,7 +10,7 @@
           <img style="width:100%;height:100%;" 
             :src="currentPage.style.image | realImgSrc"> 
           
-          <div class="debug">
+          <div class="debug" style="display:none;">
            <h3>currentPage</h3>
            <pre>{{currentPage | json}}</pre> 
           </div>

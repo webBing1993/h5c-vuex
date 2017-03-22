@@ -127,13 +127,6 @@ const plugins = [function(store) {
   store.subscribe((mutation, state) => {
     H.hook.$emit('vuex:mutation', state)
   });
-  store.watch(function(state) {
-    return state.slide;
-  }, function(slide) {
-    // console.log('watch:', slide);
-  }, {
-    deep: true
-  })
 }]
 
 export default new Vuex.Store({
